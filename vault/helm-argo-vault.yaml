@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vault
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: true
+  project: default
+  source:
+    chart: vault
+    repoURL: https://helm.releases.hashicorp.com
+    targetRevision: "*"
+    helm:
+      releaseName: hcv
+      parameters:
+      - name: "server.affinity"
+        value: ""
+      - name: "server.ha.enabled"
+        value: "true"
+      - name: "ui.enabled"
+        value: "true"
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: vault

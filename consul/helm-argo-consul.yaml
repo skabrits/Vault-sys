@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: consul
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: true
+  project: default
+  source:
+    chart: consul
+    repoURL: https://helm.releases.hashicorp.com
+    targetRevision: "*"
+    helm:
+      releaseName: hcc
+      parameters:
+      - name: "global.datacenter"
+        value: "test-cluster"
+      - name: "client.enabled"
+        value: "true"
+      - name: "server.replicas"
+        value: "2"
+      - name: "server.bootstrapExpect"
+        value: "2"
+      - name: "server.storageClass"
+        value: "longhorn"
+      - name: "server.disruptionBudget.maxUnavailable"
+        value: "0"
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: vault
