@@ -33,6 +33,10 @@ spec:
         value: "longhorn"
       - name: "server.disruptionBudget.maxUnavailable"
         value: "0"
+      - name: "connectInject.enabled"
+        value: "false"
+      - name: "ui.enabled"
+        value: "true"
   destination:
     server: "https://kubernetes.default.svc"
     namespace: vault
